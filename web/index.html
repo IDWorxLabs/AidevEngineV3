@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AiDevEngine V3</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1>AiDevEngine V3</h1>
+      </header>
+
+      <section class="panel">
+        <label for="prompt" class="sr-only">Prompt</label>
+        <textarea
+          id="prompt"
+          rows="4"
+          placeholder="Build a calculator app"
+        ></textarea>
+        <button id="build-btn" type="button">Build App</button>
+      </section>
+
+      <section id="progress" class="progress" hidden>
+        <p id="progress-text">Generating project...</p>
+      </section>
+
+      <section id="error" class="error" hidden></section>
+
+      <section id="results" class="results" hidden>
+        <h2>Build Result</h2>
+        <dl>
+          <dt>Status</dt>
+          <dd id="status"></dd>
+          <dt>Prompt</dt>
+          <dd id="result-prompt"></dd>
+          <dt>Detected app type</dt>
+          <dd id="app-type"></dd>
+          <dt>Duration</dt>
+          <dd id="duration"></dd>
+          <dt>Project folder</dt>
+          <dd id="project-folder"></dd>
+          <dt>Generated files</dt>
+          <dd id="generated-files"></dd>
+          <dt>npm install result</dt>
+          <dd id="install-result"></dd>
+          <dt>npm build result</dt>
+          <dd id="build-result"></dd>
+          <dt>Live Preview URL</dt>
+          <dd id="preview-url"></dd>
+        </dl>
+        <h3>Final report</h3>
+        <pre id="final-report"></pre>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

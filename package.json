@@ -1,0 +1,24 @@
+{
+  "name": "aidevengine-v3",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AiDevEngine V3 — simple cloud app builder core",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "start": "tsx server/builder-server.ts",
+    "build:app": "tsx scripts/build-from-prompt.ts",
+    "validate:golden-path": "tsx scripts/validate-golden-path.ts",
+    "validate:counter-path": "tsx scripts/validate-counter-path.ts",
+    "validate:todo-path": "tsx scripts/validate-todo-path.ts",
+    "validate:api-path": "tsx scripts/validate-api-path.ts",
+    "validate:web-ui": "tsx scripts/validate-web-ui.ts",
+    "validate:all": "npm run build && npm run validate:golden-path && npm run validate:counter-path && npm run validate:todo-path && npm run validate:api-path && npm run validate:web-ui"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "playwright": "^1.49.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
