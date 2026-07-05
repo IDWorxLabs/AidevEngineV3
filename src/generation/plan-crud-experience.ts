@@ -34,6 +34,13 @@ import type {
   ProductDesignModel,
   ProductDesignReport,
 } from '../product-design/product-design-types.js';
+import { buildProductPresentationModel } from '../product-presentation/product-presentation-engine.js';
+import { validateProductPresentationModel } from '../product-presentation/product-presentation-validator.js';
+import { buildProductPresentationReport } from '../product-presentation/product-presentation-report.js';
+import type {
+  ProductPresentationModel,
+  ProductPresentationReport,
+} from '../product-presentation/product-presentation-types.js';
 
 export interface CrudExperiencePlan {
   domainProfile: ApplicationDomainProfile;
@@ -43,6 +50,7 @@ export interface CrudExperiencePlan {
   productExperienceModel: ProductExperienceModel;
   productArchitectureModel: ProductArchitectureModel;
   productDesignModel: ProductDesignModel;
+  productPresentationModel: ProductPresentationModel;
 }
 
 export interface PlannedCrudExperience {
@@ -51,6 +59,7 @@ export interface PlannedCrudExperience {
   productExperienceReport: ProductExperienceReport;
   productArchitectureReport: ProductArchitectureReport;
   productDesignReport: ProductDesignReport;
+  productPresentationReport: ProductPresentationReport;
 }
 
 export function planCrudExperience(input: {
@@ -123,6 +132,22 @@ export function planCrudExperience(input: {
     );
   }
 
+  const productPresentationModel = buildProductPresentationModel({
+    domainProfile,
+    creationProfile,
+    workflowModel,
+    productExperienceModel,
+    productArchitectureModel,
+    productDesignModel,
+  });
+
+  const productPresentationValidation = validateProductPresentationModel(productPresentationModel);
+  if (!productPresentationValidation.valid) {
+    throw new Error(
+      `Product presentation validation failed: ${productPresentationValidation.errors.join('; ')}`,
+    );
+  }
+
   return {
     plan: {
       domainProfile,
@@ -132,11 +157,13 @@ export function planCrudExperience(input: {
       productExperienceModel,
       productArchitectureModel,
       productDesignModel,
+      productPresentationModel,
     },
     workflowReport: buildWorkflowReport(workflowModel),
     productExperienceReport: buildProductExperienceReport(productExperienceModel),
     productArchitectureReport: buildProductArchitectureReport(productArchitectureModel),
     productDesignReport: buildProductDesignReport(productDesignModel),
+    productPresentationReport: buildProductPresentationReport(productPresentationModel),
   };
 }
 

@@ -50,6 +50,7 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
     productExperience: null,
     productArchitecture: null,
     productDesign: null,
+    productPresentation: null,
     engineeringTimeline: null,
     generationMode: null,
     projectId: '',
@@ -163,6 +164,7 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
     let productExperience = null;
     let productArchitecture = null;
     let productDesign = null;
+    let productPresentation = null;
 
     if (crudApp) {
       const planned = planCrudExperience({
@@ -175,6 +177,7 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
       productExperience = planned.productExperienceReport;
       productArchitecture = planned.productArchitectureReport;
       productDesign = planned.productDesignReport;
+      productPresentation = planned.productPresentationReport;
     }
 
     timeline.startStage('architecture-guided-generation');
@@ -195,6 +198,7 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
       productExperience: guided.productExperience ?? productExperience,
       productArchitecture: guided.productArchitecture ?? productArchitecture,
       productDesign: guided.productDesign ?? productDesign,
+      productPresentation: guided.productPresentation ?? productPresentation,
     };
     timeline.completeStage('architecture-guided-generation', 'Success', {
       details: [

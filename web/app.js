@@ -19,6 +19,7 @@ const workflowIntelligenceEl = document.getElementById('workflow-intelligence');
 const productExperienceEl = document.getElementById('product-experience');
 const productArchitectureEl = document.getElementById('product-architecture');
 const productDesignEl = document.getElementById('product-design');
+const productPresentationEl = document.getElementById('product-presentation');
 const realAppTrialsEl = document.getElementById('real-app-trials');
 const engineeringTimelineEl = document.getElementById('engineering-timeline');
 const timelineStagesEl = document.getElementById('timeline-stages');
@@ -53,6 +54,7 @@ const REPORT_CARD_MAP = [
   ['product-experience', 'card-product-experience'],
   ['product-architecture', 'card-product-architecture'],
   ['product-design', 'card-product-design'],
+  ['product-presentation', 'card-product-presentation'],
   ['preview-verification', 'card-preview-verification'],
   ['build-loop', 'card-build-loop'],
   ['engineering-timeline-report', 'card-engineering-timeline-report'],
@@ -139,6 +141,7 @@ function resetWorkspaceUI(options = {}) {
   productExperienceEl.hidden = true;
   productArchitectureEl.hidden = true;
   productDesignEl.hidden = true;
+  productPresentationEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
 
@@ -184,6 +187,8 @@ function renderSidebarMetrics(report) {
     report.productArchitecture?.architectureSummary ?? '—';
   document.getElementById('sidebar-design-summary').textContent =
     report.productDesign?.designSummary ?? '—';
+  document.getElementById('sidebar-presentation-summary').textContent =
+    report.productPresentation?.presentationMode ?? '—';
   document.getElementById('sidebar-preview-ready').textContent = report.previewUrl ? 'Yes' : 'No';
 
   document.getElementById('sidebar-duration').textContent = `${(report.durationMs / 1000).toFixed(1)}s`;
@@ -268,6 +273,7 @@ function showTimelineBuild() {
   productExperienceEl.hidden = true;
   productArchitectureEl.hidden = true;
   productDesignEl.hidden = true;
+  productPresentationEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
   timelineIdleEl.hidden = true;
@@ -923,6 +929,46 @@ function renderProductDesign(design) {
   syncReportCards();
 }
 
+function renderProductPresentation(presentation) {
+  if (!presentation) {
+    productPresentationEl.hidden = true;
+    syncReportCards();
+    return;
+  }
+
+  productPresentationEl.hidden = false;
+  document.getElementById('ppie-presentation-mode').textContent = presentation.presentationMode;
+  document.getElementById('ppie-primary-surface').textContent = presentation.primarySurface;
+  document.getElementById('ppie-navigation-placement').textContent = presentation.navigationPlacement;
+  document.getElementById('ppie-cta-placement').textContent = presentation.ctaPlacement;
+  document.getElementById('ppie-search-placement').textContent = presentation.searchPlacement;
+  document.getElementById('ppie-filter-placement').textContent = presentation.filterPlacement;
+  document.getElementById('ppie-settings-placement').textContent = presentation.settingsPlacement;
+  document.getElementById('ppie-notification-placement').textContent = presentation.notificationPlacement;
+  document.getElementById('ppie-role-information-placement').textContent = presentation.roleInformationPlacement;
+  document.getElementById('ppie-risk-information-placement').textContent = presentation.riskInformationPlacement;
+  document.getElementById('ppie-future-capability-placement').textContent =
+    presentation.futureCapabilityPlacement;
+  document.getElementById('ppie-information-density').textContent = presentation.informationDensity;
+  document.getElementById('ppie-progressive-disclosure-strategy').textContent =
+    presentation.progressiveDisclosureStrategy;
+  document.getElementById('ppie-empty-state-placement').textContent = presentation.emptyStatePlacement;
+  document.getElementById('ppie-detail-view-placement').textContent = presentation.detailViewPlacement;
+  document.getElementById('ppie-reporting-placement').textContent = presentation.reportingPlacement;
+  document.getElementById('ppie-mobile-presentation-strategy').textContent =
+    presentation.mobilePresentationStrategy;
+  document.getElementById('ppie-confidence').textContent = presentation.presentationConfidence.toFixed(2);
+  renderList('ppie-secondary-surfaces', presentation.secondarySurfaces ?? []);
+  renderList('ppie-hidden-engineering-surfaces', presentation.hiddenEngineeringSurfaces ?? []);
+  renderList('ppie-dashboard-composition', presentation.dashboardComposition ?? []);
+  renderList('ppie-above-the-fold-priority', presentation.aboveTheFoldPriority ?? []);
+  renderList('ppie-screen-sections', presentation.screenSections ?? []);
+  renderList('ppie-collapsed-sections', presentation.collapsedSections ?? []);
+  renderList('ppie-drawer-sections', presentation.drawerSections ?? []);
+  renderList('ppie-modal-sections', presentation.modalSections ?? []);
+  syncReportCards();
+}
+
 function renderProductQuality(quality) {
   if (!quality) {
     productQualityEl.hidden = true;
@@ -1165,6 +1211,7 @@ function renderResults(data) {
   renderProductExperience(report.productExperience);
   renderProductArchitecture(report.productArchitecture);
   renderProductDesign(report.productDesign);
+  renderProductPresentation(report.productPresentation);
   renderBuildLoop(report.buildLoop);
   renderPreviewVerification(report.previewVerification);
   renderRealAppTrials(report.realAppTrialResults);

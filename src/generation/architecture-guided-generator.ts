@@ -30,6 +30,7 @@ export interface ArchitectureGuidedWorkspace {
   productExperience: import('../product-experience/product-experience-types.js').ProductExperienceReport | null;
   productArchitecture: import('../product-architecture/product-architecture-types.js').ProductArchitectureReport | null;
   productDesign: import('../product-design/product-design-types.js').ProductDesignReport | null;
+  productPresentation: import('../product-presentation/product-presentation-types.js').ProductPresentationReport | null;
 }
 
 export interface ArchitectureGuidedWorkspaceInput {
@@ -56,6 +57,7 @@ function finalizeWorkspace(
   productExperience: import('../product-experience/product-experience-types.js').ProductExperienceReport | null = null,
   productArchitecture: import('../product-architecture/product-architecture-types.js').ProductArchitectureReport | null = null,
   productDesign: import('../product-design/product-design-types.js').ProductDesignReport | null = null,
+  productPresentation: import('../product-presentation/product-presentation-types.js').ProductPresentationReport | null = null,
 ): ArchitectureGuidedWorkspace {
   const evidence = collectEvidence(files, architecturePlan);
   return {
@@ -65,6 +67,7 @@ function finalizeWorkspace(
     productExperience,
     productArchitecture,
     productDesign,
+    productPresentation,
     architectureGeneration: {
       applied: true,
       foldersCreated: evidence.foldersCreated,
@@ -581,6 +584,7 @@ export function buildArchitectureGuidedWorkspace(
           crud.productExperience,
           crud.productArchitecture,
           crud.productDesign,
+          crud.productPresentation,
         );
       }
       break;

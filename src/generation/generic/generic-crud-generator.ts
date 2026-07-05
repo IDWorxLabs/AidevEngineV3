@@ -28,6 +28,9 @@ import type { ProductArchitectureReport } from '../../product-architecture/produ
 import { applyProductDesignToLayout } from '../../product-design/product-design-renderer.js';
 import { buildProductDesignReport } from '../../product-design/product-design-report.js';
 import type { ProductDesignReport } from '../../product-design/product-design-types.js';
+import { applyProductPresentationToLayout } from '../../product-presentation/product-presentation-renderer.js';
+import { buildProductPresentationReport } from '../../product-presentation/product-presentation-report.js';
+import type { ProductPresentationReport } from '../../product-presentation/product-presentation-types.js';
 import {
   baseProjectFiles,
   type ArchitectureGuidedInput,
@@ -49,6 +52,7 @@ export interface GenericCrudWorkspaceResult {
   productExperience: ProductExperienceReport;
   productArchitecture: ProductArchitectureReport;
   productDesign: ProductDesignReport;
+  productPresentation: ProductPresentationReport;
 }
 
 function buildEntityService(entitySlug: string, creation: DomainCreationProfile): string {
@@ -627,6 +631,7 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     productExperienceModel,
     productArchitectureModel,
     productDesignModel,
+    productPresentationModel,
   } = experiencePlan;
 
   let layoutResult = buildUiLayoutHomePage({
@@ -640,6 +645,7 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
   layoutResult = applyProductExperienceToLayout(layoutResult, productExperienceModel, creationProfile);
   layoutResult = applyProductArchitectureToLayout(layoutResult, productArchitectureModel);
   layoutResult = applyProductDesignToLayout(layoutResult, productDesignModel);
+  layoutResult = applyProductPresentationToLayout(layoutResult, productPresentationModel);
 
   const uiStrategy: UiStrategyReport = {
     ...uiStrategySelection.report,
@@ -702,5 +708,6 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     productExperience: buildProductExperienceReport(productExperienceModel),
     productArchitecture: buildProductArchitectureReport(productArchitectureModel),
     productDesign: buildProductDesignReport(productDesignModel),
+    productPresentation: buildProductPresentationReport(productPresentationModel),
   };
 }

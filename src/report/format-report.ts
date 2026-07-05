@@ -15,6 +15,7 @@ import type {
   ProductExperienceReport,
   ProductArchitectureReport,
   ProductDesignReport,
+  ProductPresentationReport,
   UnderstandingReport,
 } from '../types.js';
 import { formatStageDuration } from '../runtime/live-engineering-timeline.js';
@@ -380,6 +381,56 @@ export function formatProductDesignSection(design: ProductDesignReport): string[
   ];
 }
 
+export function formatProductPresentationSection(presentation: ProductPresentationReport): string[] {
+  return [
+    '──────────────── Product Presentation Intelligence ────────────────',
+    `Presentation Mode:              ${presentation.presentationMode}`,
+    `Primary Surface:                ${presentation.primarySurface}`,
+    'Secondary Surfaces:',
+    ...(presentation.secondarySurfaces.length > 0
+      ? formatList(presentation.secondarySurfaces)
+      : ['  (none)']),
+    'Hidden Engineering Surfaces:',
+    ...(presentation.hiddenEngineeringSurfaces.length > 0
+      ? formatList(presentation.hiddenEngineeringSurfaces)
+      : ['  (none)']),
+    'Dashboard Composition:',
+    ...(presentation.dashboardComposition.length > 0
+      ? formatList(presentation.dashboardComposition)
+      : ['  (none)']),
+    `Navigation Placement:           ${presentation.navigationPlacement}`,
+    `CTA Placement:                  ${presentation.ctaPlacement}`,
+    `Search Placement:               ${presentation.searchPlacement}`,
+    `Filter Placement:               ${presentation.filterPlacement}`,
+    `Settings Placement:             ${presentation.settingsPlacement}`,
+    `Notification Placement:         ${presentation.notificationPlacement}`,
+    `Role Information Placement:     ${presentation.roleInformationPlacement}`,
+    `Risk Information Placement:     ${presentation.riskInformationPlacement}`,
+    `Future Capability Placement:    ${presentation.futureCapabilityPlacement}`,
+    `Information Density:            ${presentation.informationDensity}`,
+    `Progressive Disclosure Strategy: ${presentation.progressiveDisclosureStrategy}`,
+    'Above The Fold Priority:',
+    ...(presentation.aboveTheFoldPriority.length > 0
+      ? formatList(presentation.aboveTheFoldPriority)
+      : ['  (none)']),
+    'Screen Sections:',
+    ...(presentation.screenSections.length > 0 ? formatList(presentation.screenSections) : ['  (none)']),
+    'Collapsed Sections:',
+    ...(presentation.collapsedSections.length > 0
+      ? formatList(presentation.collapsedSections)
+      : ['  (none)']),
+    'Drawer Sections:',
+    ...(presentation.drawerSections.length > 0 ? formatList(presentation.drawerSections) : ['  (none)']),
+    'Modal Sections:',
+    ...(presentation.modalSections.length > 0 ? formatList(presentation.modalSections) : ['  (none)']),
+    `Empty State Placement:          ${presentation.emptyStatePlacement}`,
+    `Detail View Placement:          ${presentation.detailViewPlacement}`,
+    `Reporting Placement:            ${presentation.reportingPlacement}`,
+    `Mobile Presentation Strategy:   ${presentation.mobilePresentationStrategy}`,
+    `Presentation Confidence:        ${presentation.presentationConfidence.toFixed(2)}`,
+  ];
+}
+
 export function formatUiStrategySection(uiStrategy: UiStrategyReport): string[] {
   return [
     '── UI Strategy ──',
@@ -619,6 +670,10 @@ export function formatBuildReport(report: BuildReport): string {
 
   if (report.productDesign) {
     lines.push('', ...formatProductDesignSection(report.productDesign));
+  }
+
+  if (report.productPresentation) {
+    lines.push('', ...formatProductPresentationSection(report.productPresentation));
   }
 
   if (report.uiStrategy) {
