@@ -77,6 +77,8 @@ import type { RealAppTrialResult } from './testing/real-app-trial-types.js';
 import type { GenericApplicationCapabilities } from './generation/generic/generic-capability-types.js';
 export type { ProductQualityReport } from './generation/product-quality/product-quality-types.js';
 export type { UiStrategyReport } from './generation/ui-strategy/ui-strategy-types.js';
+export type { WorkflowReport } from './workflow/workflow-types.js';
+export type { ProductExperienceReport } from './product-experience/product-experience-types.js';
 export type {
   EngineeringTimeline,
   EngineeringTimelineEvent,
@@ -87,6 +89,8 @@ export type {
 import type { PreviewVerificationReport } from './testing/preview-verification-types.js';
 import type { ProductQualityReport } from './generation/product-quality/product-quality-types.js';
 import type { UiStrategyReport } from './generation/ui-strategy/ui-strategy-types.js';
+import type { WorkflowReport } from './workflow/workflow-types.js';
+import type { ProductExperienceReport } from './product-experience/product-experience-types.js';
 import type { EngineeringTimeline, TimelineEventCallback } from './runtime/live-engineering-timeline.js';
 
 export interface GeneratedFile {
@@ -109,6 +113,8 @@ export interface BuildReport {
   genericApplicationCapabilities: GenericApplicationCapabilities | null;
   productQuality: ProductQualityReport | null;
   uiStrategy: UiStrategyReport | null;
+  workflowIntelligence: WorkflowReport | null;
+  productExperience: ProductExperienceReport | null;
   engineeringTimeline: EngineeringTimeline | null;
   generationMode: GenerationMode | null;
   projectId: string;

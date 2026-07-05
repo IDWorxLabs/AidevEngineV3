@@ -11,11 +11,13 @@ import type {
   ProductQualityReport,
   RealAppTrialSuiteReport,
   UiStrategyReport,
+  WorkflowReport,
+  ProductExperienceReport,
   UnderstandingReport,
 } from '../types.js';
 import { formatStageDuration } from '../runtime/live-engineering-timeline.js';
 
-function formatList(items: string[], indent = '  '): string[] {
+function formatList(items: readonly string[], indent = '  '): string[] {
   return items.map((item) => `${indent}• ${item}`);
 }
 
@@ -173,6 +175,100 @@ export function formatGenericApplicationCapabilitiesSection(
     ...(capabilities.crudCapabilities.length > 0
       ? formatList(capabilities.crudCapabilities)
       : ['  (none)']),
+  ];
+}
+
+export function formatWorkflowIntelligenceSection(workflow: WorkflowReport): string[] {
+  return [
+    '──────────────── Workflow Intelligence ────────────────',
+    `Application Goal:       ${workflow.applicationGoal}`,
+    `Primary Actor:          ${workflow.primaryActor}`,
+    `Primary Workflow:       ${workflow.primaryWorkflow}`,
+    'Secondary Workflows:',
+    ...(workflow.secondaryWorkflows.length > 0
+      ? formatList(workflow.secondaryWorkflows)
+      : ['  (none)']),
+    `Navigation Model:       ${workflow.navigationModel}`,
+    `Entry Screen:           ${workflow.entryScreen}`,
+    `Completion Screen:      ${workflow.completionScreen}`,
+    'Workflow Steps:',
+    ...(workflow.workflowSteps.length > 0
+      ? formatList(workflow.workflowSteps)
+      : ['  (none)']),
+    'Critical Actions:',
+    ...(workflow.criticalActions.length > 0
+      ? formatList(workflow.criticalActions)
+      : ['  (none)']),
+    'Interaction Patterns:',
+    ...(workflow.interactionPatterns.length > 0
+      ? formatList(workflow.interactionPatterns)
+      : ['  (none)']),
+    'Screen Priorities:',
+    ...(workflow.screenPriorities.length > 0
+      ? formatList(workflow.screenPriorities)
+      : ['  (none)']),
+    'Data Flow:',
+    ...(workflow.dataFlow.length > 0 ? formatList(workflow.dataFlow) : ['  (none)']),
+    'Success Criteria:',
+    ...(workflow.successCriteria.length > 0
+      ? formatList(workflow.successCriteria)
+      : ['  (none)']),
+    `Workflow Confidence:    ${workflow.workflowConfidence.toFixed(2)}`,
+  ];
+}
+
+export function formatProductExperienceSection(
+  experience: ProductExperienceReport,
+): string[] {
+  return [
+    '──────────────── Product Experience Intelligence ────────────────',
+    `Experience Goal:        ${experience.experienceGoal}`,
+    `Primary User Emotion:   ${experience.primaryUserEmotion}`,
+    'Information Hierarchy:',
+    ...(experience.informationHierarchy.length > 0
+      ? formatList(experience.informationHierarchy)
+      : ['  (none)']),
+    'Visual Hierarchy:',
+    ...(experience.visualHierarchy.length > 0
+      ? formatList(experience.visualHierarchy)
+      : ['  (none)']),
+    'Attention Flow:',
+    ...(experience.attentionFlow.length > 0
+      ? formatList(experience.attentionFlow)
+      : ['  (none)']),
+    'CTA Hierarchy:',
+    ...(experience.ctaHierarchy.length > 0
+      ? formatList(experience.ctaHierarchy)
+      : ['  (none)']),
+    'Feedback Model:',
+    ...(experience.feedbackModel.length > 0
+      ? formatList(experience.feedbackModel)
+      : ['  (none)']),
+    `Empty State Strategy:   ${experience.emptyStateStrategy}`,
+    `Loading State Strategy: ${experience.loadingStateStrategy}`,
+    `Error State Strategy:   ${experience.errorStateStrategy}`,
+    `Success State Strategy: ${experience.successStateStrategy}`,
+    'Microcopy Guidelines:',
+    ...(experience.microcopyGuidelines.length > 0
+      ? formatList(experience.microcopyGuidelines)
+      : ['  (none)']),
+    'Dashboard Emphasis:',
+    ...(experience.dashboardEmphasis.length > 0
+      ? formatList(experience.dashboardEmphasis)
+      : ['  (none)']),
+    'Trust Signals:',
+    ...(experience.trustSignals.length > 0
+      ? formatList(experience.trustSignals)
+      : ['  (none)']),
+    'Friction Reduction:',
+    ...(experience.frictionReduction.length > 0
+      ? formatList(experience.frictionReduction)
+      : ['  (none)']),
+    'Accessibility Guidance:',
+    ...(experience.accessibilityGuidance.length > 0
+      ? formatList(experience.accessibilityGuidance)
+      : ['  (none)']),
+    `Experience Confidence:  ${experience.experienceConfidence.toFixed(2)}`,
   ];
 }
 
@@ -399,6 +495,14 @@ export function formatBuildReport(report: BuildReport): string {
 
   if (report.productQuality) {
     lines.push('', ...formatProductQualitySection(report.productQuality));
+  }
+
+  if (report.workflowIntelligence) {
+    lines.push('', ...formatWorkflowIntelligenceSection(report.workflowIntelligence));
+  }
+
+  if (report.productExperience) {
+    lines.push('', ...formatProductExperienceSection(report.productExperience));
   }
 
   if (report.uiStrategy) {

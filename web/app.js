@@ -15,6 +15,8 @@ const buildLoopEl = document.getElementById('build-loop');
 const genericCapabilityEl = document.getElementById('generic-application-capability');
 const productQualityEl = document.getElementById('product-quality');
 const uiStrategyEl = document.getElementById('ui-strategy');
+const workflowIntelligenceEl = document.getElementById('workflow-intelligence');
+const productExperienceEl = document.getElementById('product-experience');
 const realAppTrialsEl = document.getElementById('real-app-trials');
 const engineeringTimelineEl = document.getElementById('engineering-timeline');
 const timelineStagesEl = document.getElementById('timeline-stages');
@@ -45,6 +47,8 @@ const REPORT_CARD_MAP = [
   ['feature-reality', 'card-feature-reality'],
   ['product-quality', 'card-product-quality'],
   ['ui-strategy', 'card-ui-strategy'],
+  ['workflow-intelligence', 'card-workflow-intelligence'],
+  ['product-experience', 'card-product-experience'],
   ['preview-verification', 'card-preview-verification'],
   ['build-loop', 'card-build-loop'],
   ['engineering-timeline-report', 'card-engineering-timeline-report'],
@@ -127,6 +131,8 @@ function resetWorkspaceUI(options = {}) {
   genericCapabilityEl.hidden = true;
   productQualityEl.hidden = true;
   uiStrategyEl.hidden = true;
+  workflowIntelligenceEl.hidden = true;
+  productExperienceEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
 
@@ -166,6 +172,8 @@ function renderSidebarMetrics(report) {
   document.getElementById('sidebar-app-type').textContent = category;
   document.getElementById('sidebar-ui-strategy').textContent =
     report.uiStrategy?.strategyName ?? report.uiStrategy?.layoutPattern ?? '—';
+  document.getElementById('sidebar-experience').textContent =
+    report.productExperience?.experienceSummary ?? '—';
   document.getElementById('sidebar-preview-ready').textContent = report.previewUrl ? 'Yes' : 'No';
 
   document.getElementById('sidebar-duration').textContent = `${(report.durationMs / 1000).toFixed(1)}s`;
@@ -246,6 +254,8 @@ function showTimelineBuild() {
   genericCapabilityEl.hidden = true;
   productQualityEl.hidden = true;
   uiStrategyEl.hidden = true;
+  workflowIntelligenceEl.hidden = true;
+  productExperienceEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
   timelineIdleEl.hidden = true;
@@ -792,6 +802,59 @@ function renderUiStrategy(uiStrategy) {
   syncReportCards();
 }
 
+function renderWorkflowIntelligence(workflow) {
+  if (!workflow) {
+    workflowIntelligenceEl.hidden = true;
+    syncReportCards();
+    return;
+  }
+
+  workflowIntelligenceEl.hidden = false;
+  document.getElementById('workflow-application-goal').textContent = workflow.applicationGoal;
+  document.getElementById('workflow-primary-actor').textContent = workflow.primaryActor;
+  document.getElementById('workflow-primary-workflow').textContent = workflow.primaryWorkflow;
+  document.getElementById('workflow-navigation-model').textContent = workflow.navigationModel;
+  document.getElementById('workflow-entry-screen').textContent = workflow.entryScreen;
+  document.getElementById('workflow-completion-screen').textContent = workflow.completionScreen;
+  document.getElementById('workflow-confidence').textContent = workflow.workflowConfidence.toFixed(2);
+  renderList('workflow-secondary-workflows', workflow.secondaryWorkflows ?? []);
+  renderList('workflow-steps', workflow.workflowSteps ?? []);
+  renderList('workflow-critical-actions', workflow.criticalActions ?? []);
+  renderList('workflow-interaction-patterns', workflow.interactionPatterns ?? []);
+  renderList('workflow-screen-priorities', workflow.screenPriorities ?? []);
+  renderList('workflow-data-flow', workflow.dataFlow ?? []);
+  renderList('workflow-success-criteria', workflow.successCriteria ?? []);
+  syncReportCards();
+}
+
+function renderProductExperience(experience) {
+  if (!experience) {
+    productExperienceEl.hidden = true;
+    syncReportCards();
+    return;
+  }
+
+  productExperienceEl.hidden = false;
+  document.getElementById('pxie-experience-goal').textContent = experience.experienceGoal;
+  document.getElementById('pxie-primary-emotion').textContent = experience.primaryUserEmotion;
+  document.getElementById('pxie-empty-state').textContent = experience.emptyStateStrategy;
+  document.getElementById('pxie-loading-state').textContent = experience.loadingStateStrategy;
+  document.getElementById('pxie-error-state').textContent = experience.errorStateStrategy;
+  document.getElementById('pxie-success-state').textContent = experience.successStateStrategy;
+  document.getElementById('pxie-confidence').textContent = experience.experienceConfidence.toFixed(2);
+  renderList('pxie-information-hierarchy', experience.informationHierarchy ?? []);
+  renderList('pxie-visual-hierarchy', experience.visualHierarchy ?? []);
+  renderList('pxie-attention-flow', experience.attentionFlow ?? []);
+  renderList('pxie-cta-hierarchy', experience.ctaHierarchy ?? []);
+  renderList('pxie-feedback-model', experience.feedbackModel ?? []);
+  renderList('pxie-microcopy', experience.microcopyGuidelines ?? []);
+  renderList('pxie-dashboard-emphasis', experience.dashboardEmphasis ?? []);
+  renderList('pxie-trust-signals', experience.trustSignals ?? []);
+  renderList('pxie-friction-reduction', experience.frictionReduction ?? []);
+  renderList('pxie-accessibility', experience.accessibilityGuidance ?? []);
+  syncReportCards();
+}
+
 function renderProductQuality(quality) {
   if (!quality) {
     productQualityEl.hidden = true;
@@ -1030,6 +1093,8 @@ function renderResults(data) {
   renderGenericApplicationCapability(report.genericApplicationCapabilities);
   renderProductQuality(report.productQuality);
   renderUiStrategy(report.uiStrategy);
+  renderWorkflowIntelligence(report.workflowIntelligence);
+  renderProductExperience(report.productExperience);
   renderBuildLoop(report.buildLoop);
   renderPreviewVerification(report.previewVerification);
   renderRealAppTrials(report.realAppTrialResults);

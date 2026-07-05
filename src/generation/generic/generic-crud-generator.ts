@@ -1,5 +1,4 @@
 import type { BuildPlan, GeneratedFile, ArchitecturePlan, UnderstandingReport } from '../../types.js';
-import { inferApplicationDomain, type ApplicationDomainProfile } from './domain-profiles.js';
 import {
   buildChartPlaceholder,
   buildDashboardSummary,
@@ -11,13 +10,18 @@ import {
 import {
   buildEntityInterface,
   buildSeedInitializer,
-  resolveDomainCreationProfile,
   SOFTWARE_CREATION_MARKER,
   type DomainCreationProfile,
 } from './domain-creation-profiles.js';
-import { selectUiStrategy } from '../ui-strategy/select-ui-strategy.js';
 import { buildUiLayoutHomePage } from '../ui-strategy/layout-generators/build-ui-layout.js';
 import type { UiStrategyReport } from '../ui-strategy/ui-strategy-types.js';
+import type { CrudExperiencePlan } from '../plan-crud-experience.js';
+import { applyWorkflowToLayout } from '../../workflow/workflow-renderer.js';
+import { buildWorkflowReport } from '../../workflow/workflow-report.js';
+import type { WorkflowReport } from '../../workflow/workflow-types.js';
+import { applyProductExperienceToLayout } from '../../product-experience/product-experience-renderer.js';
+import { buildProductExperienceReport } from '../../product-experience/product-experience-report.js';
+import type { ProductExperienceReport } from '../../product-experience/product-experience-types.js';
 import {
   baseProjectFiles,
   type ArchitectureGuidedInput,
@@ -29,6 +33,14 @@ export interface GenericCrudWorkspaceInput {
   buildPlan: BuildPlan;
   architecturePlan: ArchitecturePlan;
   projectName: string;
+  experiencePlan: CrudExperiencePlan;
+}
+
+export interface GenericCrudWorkspaceResult {
+  files: GeneratedFile[];
+  uiStrategy: UiStrategyReport;
+  workflowIntelligence: WorkflowReport;
+  productExperience: ProductExperienceReport;
 }
 
 function buildEntityService(entitySlug: string, creation: DomainCreationProfile): string {
@@ -591,37 +603,29 @@ ${layoutCss}
 `);
 }
 
-export interface GenericCrudWorkspaceResult {
-  files: GeneratedFile[];
-  uiStrategy: UiStrategyReport;
-}
-
 export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): GenericCrudWorkspaceResult {
-  const { understanding, buildPlan, architecturePlan, projectName } = input;
+  const { understanding, buildPlan, architecturePlan, projectName, experiencePlan } = input;
   const guidedInput: ArchitectureGuidedInput = {
     buildPlan,
     architecturePlan,
     projectName,
   };
 
-  const domainProfile = inferApplicationDomain(understanding, buildPlan);
-  const creationProfile = resolveDomainCreationProfile(understanding, buildPlan);
-  const { strategy, report: uiStrategyReport } = selectUiStrategy({
-    understanding,
-    buildPlan,
-    architecturePlan,
-    domainProfile,
-  });
+  const { domainProfile, creationProfile, uiStrategySelection, workflowModel, productExperienceModel } =
+    experiencePlan;
 
-  const layoutResult = buildUiLayoutHomePage({
+  let layoutResult = buildUiLayoutHomePage({
     appName: buildPlan.appName,
     profile: domainProfile,
     creation: creationProfile,
-    strategy,
+    strategy: uiStrategySelection.strategy,
   });
 
+  layoutResult = applyWorkflowToLayout(layoutResult, workflowModel, creationProfile);
+  layoutResult = applyProductExperienceToLayout(layoutResult, productExperienceModel, creationProfile);
+
   const uiStrategy: UiStrategyReport = {
-    ...uiStrategyReport,
+    ...uiStrategySelection.report,
     generatedLayoutComponents: layoutResult.layoutComponents,
   };
 
@@ -674,5 +678,10 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     { relativePath: 'src/index.css', content: buildIndexCss(layoutResult.layoutCss) },
   ];
 
-  return { files, uiStrategy };
+  return {
+    files,
+    uiStrategy,
+    workflowIntelligence: buildWorkflowReport(workflowModel),
+    productExperience: buildProductExperienceReport(productExperienceModel),
+  };
 }

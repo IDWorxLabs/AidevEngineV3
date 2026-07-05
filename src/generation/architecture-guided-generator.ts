@@ -12,6 +12,7 @@ import {
   featuresListJsx,
 } from '../generator/templates/shared.js';
 import { buildGenericCrudWorkspace } from './generic/generic-crud-generator.js';
+import type { CrudExperiencePlan } from './plan-crud-experience.js';
 import { buildWeatherWorkspace } from './generic/weather-workspace.js';
 import { isWeatherApplication } from './generic/infer-application-profile.js';
 import {
@@ -25,6 +26,8 @@ export interface ArchitectureGuidedWorkspace {
   files: GeneratedFile[];
   architectureGeneration: ArchitectureGeneration;
   uiStrategy: import('./ui-strategy/ui-strategy-types.js').UiStrategyReport | null;
+  workflowIntelligence: import('../workflow/workflow-types.js').WorkflowReport | null;
+  productExperience: import('../product-experience/product-experience-types.js').ProductExperienceReport | null;
 }
 
 export interface ArchitectureGuidedWorkspaceInput {
@@ -32,6 +35,7 @@ export interface ArchitectureGuidedWorkspaceInput {
   buildPlan: BuildPlan;
   architecturePlan: ArchitecturePlan;
   projectName: string;
+  experiencePlan?: CrudExperiencePlan | null;
 }
 
 function guidedInput(input: ArchitectureGuidedWorkspaceInput): ArchitectureGuidedInput {
@@ -46,11 +50,15 @@ function finalizeWorkspace(
   files: GeneratedFile[],
   architecturePlan: ArchitecturePlan,
   uiStrategy: import('./ui-strategy/ui-strategy-types.js').UiStrategyReport | null = null,
+  workflowIntelligence: import('../workflow/workflow-types.js').WorkflowReport | null = null,
+  productExperience: import('../product-experience/product-experience-types.js').ProductExperienceReport | null = null,
 ): ArchitectureGuidedWorkspace {
   const evidence = collectEvidence(files, architecturePlan);
   return {
     files,
     uiStrategy,
+    workflowIntelligence,
+    productExperience,
     architectureGeneration: {
       applied: true,
       foldersCreated: evidence.foldersCreated,
@@ -552,11 +560,23 @@ export function buildArchitectureGuidedWorkspace(
       ) {
         files = buildWeatherWorkspace(input);
       } else {
-        const crud = buildGenericCrudWorkspace(input);
-        return finalizeWorkspace(crud.files, input.architecturePlan, crud.uiStrategy);
+        if (!input.experiencePlan) {
+          throw new Error('CRUD experience plan is required before UI generation');
+        }
+        const crud = buildGenericCrudWorkspace({
+          ...input,
+          experiencePlan: input.experiencePlan,
+        });
+        return finalizeWorkspace(
+          crud.files,
+          input.architecturePlan,
+          crud.uiStrategy,
+          crud.workflowIntelligence,
+          crud.productExperience,
+        );
       }
       break;
   }
 
-  return finalizeWorkspace(files, input.architecturePlan, null);
+  return finalizeWorkspace(files, input.architecturePlan, null, null);
 }

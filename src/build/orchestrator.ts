@@ -11,6 +11,7 @@ import { analyzePrompt } from '../understanding/analyze-prompt.js';
 import { evaluateGenericApplicationCapabilities } from '../generation/generic/evaluate-generic-capabilities.js';
 import { evaluateProductQuality } from '../generation/product-quality/evaluate-product-quality.js';
 import { isCrudApplication } from '../generation/generic/infer-application-profile.js';
+import { planCrudExperience } from '../generation/plan-crud-experience.js';
 import { runRealPreviewVerification } from '../testing/real-preview-runner.js';
 import { LiveEngineeringTimelineTracker } from '../runtime/live-engineering-timeline.js';
 import type { EngineeringTimelineStageId } from '../runtime/live-engineering-timeline.js';
@@ -45,6 +46,8 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
     genericApplicationCapabilities: null,
     productQuality: null,
     uiStrategy: null,
+    workflowIntelligence: null,
+    productExperience: null,
     engineeringTimeline: null,
     generationMode: null,
     projectId: '',
@@ -146,12 +149,35 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
   };
 
   try {
+    const crudApp = isCrudApplication(
+      appType,
+      buildPlan.appName,
+      understanding.detectedIntent,
+      architecturePlan.projectType,
+    );
+
+    let experiencePlan = null;
+    let workflowIntelligence = null;
+    let productExperience = null;
+
+    if (crudApp) {
+      const planned = planCrudExperience({
+        understanding,
+        buildPlan,
+        architecturePlan,
+      });
+      experiencePlan = planned.plan;
+      workflowIntelligence = planned.workflowReport;
+      productExperience = planned.productExperienceReport;
+    }
+
     timeline.startStage('architecture-guided-generation');
     const guided = buildArchitectureGuidedWorkspace({
       understanding,
       buildPlan,
       architecturePlan,
       projectName: projectId,
+      experiencePlan,
     });
 
     report = {
@@ -159,6 +185,8 @@ export async function buildFromPrompt(input: BuildFromPromptInput): Promise<Buil
       stage: 'generate',
       architectureGeneration: guided.architectureGeneration,
       uiStrategy: guided.uiStrategy,
+      workflowIntelligence: guided.workflowIntelligence ?? workflowIntelligence,
+      productExperience: guided.productExperience ?? productExperience,
     };
     timeline.completeStage('architecture-guided-generation', 'Success', {
       details: [
