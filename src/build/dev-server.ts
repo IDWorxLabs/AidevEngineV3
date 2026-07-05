@@ -16,6 +16,14 @@ export interface DevServerState {
 
 const activeServers = new Map<string, DevServerState>();
 
+function detachChildStreams(child: ChildProcess): void {
+  child.stdout?.removeAllListeners();
+  child.stderr?.removeAllListeners();
+  child.stdout?.pause();
+  child.stderr?.pause();
+  child.unref();
+}
+
 function resolveViteExecutable(projectDir: string): { executable: string; args: string[] } | null {
   const viteBin = join(projectDir, 'node_modules', 'vite', 'bin', 'vite.js');
   if (!existsSync(viteBin)) return null;
@@ -66,6 +74,7 @@ export function startDevServer(
           projectDir,
           startedAt: Date.now(),
         });
+        detachChildStreams(child);
         resolve(result);
         return;
       }
@@ -80,6 +89,7 @@ export function startDevServer(
             projectDir,
             startedAt: Date.now(),
           });
+          detachChildStreams(child);
           resolve({ ok: true, port: parsed.port, url: parsed.url });
           return;
         }
@@ -133,4 +143,14 @@ export function getActiveDevServer(projectDir: string): DevServerState | null {
 
 export function listActiveDevServers(): DevServerState[] {
   return [...activeServers.values()].filter((s) => s.child.exitCode === null);
+}
+
+export function stopAllDevServers(): void {
+  for (const state of activeServers.values()) {
+    if (state.child.exitCode === null) {
+      detachChildStreams(state.child);
+      state.child.kill('SIGTERM');
+    }
+  }
+  activeServers.clear();
 }

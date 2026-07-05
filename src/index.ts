@@ -1,4 +1,17 @@
 export { buildFromPrompt } from './build/orchestrator.js';
+export { buildUnsupportedPromptMessage, SUPPORTED_PROMPT_EXAMPLES } from './build/unsupported-prompt.js';
+export { repairBuildFailure } from './repair/repair-build-failure.js';
+export { BROKEN_CALCULATOR_PROMPT, shouldInjectBrokenImport } from './repair/fault-injection.js';
+export { createBuildPlan } from './planner/create-build-plan.js';
+export { createDraftBuildPlan } from './planner/create-draft-build-plan.js';
 export { formatBuildReport, buildReportJson } from './report/format-report.js';
 export { detectAppType } from './generator/detect-app-type.js';
-export type { BuildReport, BuildFromPromptInput, AppType } from './types.js';
+export { analyzePrompt } from './understanding/analyze-prompt.js';
+export { buildGenericAppFiles } from './generator/generic-app-generator.js';
+export { buildArchitectureGuidedWorkspace } from './generation/architecture-guided-generator.js';
+export { createArchitecturePlan } from './architecture/create-architecture-plan.js';
+export { evaluateFeatureReality } from './feature-reality/evaluate-feature-reality.js';
+export { runBuildLoop } from './build-loop/build-loop-engine.js';
+export { runRealAppTrialHarness, formatRealAppTrialSummary, REAL_APP_TRIAL_SUITE, attachTrialResultsToReport } from './testing/real-app-trial-harness.js';
+export type { BuildReport, BuildFromPromptInput, BuildPlan, AppType, UnderstandingReport, GenerationMode, ArchitecturePlan, ArchitectureGeneration, FeatureRealityReport, FeatureRealityStatus, BuildLoopReport, BuildLoopStatus, RealAppTrialResult, RealAppTrialSuiteReport, RealAppTrialVerdict, EngineeringTimeline, EngineeringTimelineEvent, EngineeringTimelineEventStatus } from './types.js';
+export { LiveEngineeringTimelineTracker, ENGINEERING_TIMELINE_STAGES } from './runtime/live-engineering-timeline.js';

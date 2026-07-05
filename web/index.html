@@ -3,57 +3,495 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AiDevEngine V3</title>
+    <title>AiDevEngine V3 — App Builder</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body>
-    <main class="container">
-      <header class="header">
-        <h1>AiDevEngine V3</h1>
+  <body class="single-screen-body">
+    <div class="app-shell single-screen-builder" id="single-screen-builder">
+      <header class="top-header compact-header">
+        <div class="brand">
+          <span class="logo-mark" aria-hidden="true">⚡</span>
+          <div class="brand-text">
+            <h1 class="brand-title">AiDevEngine V3</h1>
+            <span class="version-label">v0.1.0</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="status-pill" id="builder-status">
+            <span class="status-dot"></span>
+            Builder online
+          </span>
+          <button type="button" id="view-previews-btn" class="btn-ghost btn-sm">View previews</button>
+          <button type="button" id="reset-workspace-btn" class="btn-ghost btn-sm">Reset</button>
+        </div>
       </header>
 
-      <section class="panel">
-        <label for="prompt" class="sr-only">Prompt</label>
-        <textarea
-          id="prompt"
-          rows="4"
-          placeholder="Build a calculator app"
-        ></textarea>
-        <button id="build-btn" type="button">Build App</button>
-      </section>
+      <div class="command-center">
+        <aside class="prompt-column">
+          <section class="card prompt-panel compact-prompt" id="prompt-panel">
+            <h2 class="panel-heading compact-heading">What would you like to build?</h2>
+            <div class="prompt-chips" role="group" aria-label="Example prompts">
+              <button type="button" class="prompt-chip" data-prompt="Build an expense tracker with dashboard">Expense Tracker</button>
+              <button type="button" class="prompt-chip" data-prompt="Build a CRM">CRM</button>
+              <button type="button" class="prompt-chip" data-prompt="Build an inventory system">Inventory System</button>
+              <button type="button" class="prompt-chip" data-prompt="Build a recipe manager">Recipe App</button>
+              <button type="button" class="prompt-chip" data-prompt="Build a restaurant POS">Restaurant POS</button>
+              <button type="button" class="prompt-chip" data-prompt="Build a school portal">School Portal</button>
+              <button type="button" class="prompt-chip" data-prompt="Build a fitness tracker">Fitness Tracker</button>
+              <button type="button" class="prompt-chip" data-prompt="Build a note-taking app">Notes App</button>
+            </div>
+            <label for="prompt" class="sr-only">App description</label>
+            <textarea
+              id="prompt"
+              rows="3"
+              placeholder="Describe the application you want AiDevEngine to create..."
+            ></textarea>
+            <div class="prompt-actions">
+              <button id="build-btn" type="button" class="btn-primary btn-build">
+                <span class="btn-label">Build Application</span>
+                <span class="btn-spinner" hidden aria-hidden="true"></span>
+              </button>
+              <button type="button" id="new-build-btn" class="btn-secondary btn-sm">New Build</button>
+            </div>
+          </section>
+          <section id="error" class="card error-banner compact-error" hidden></section>
+        </aside>
 
-      <section id="progress" class="progress" hidden>
-        <p id="progress-text">Generating project...</p>
-      </section>
+        <main class="timeline-column">
+          <section id="timeline-idle" class="card timeline-idle">
+            <h2 class="panel-heading">Engineering Timeline</h2>
+            <p class="panel-subtext">Enter a prompt and start a build to watch AiDevEngine work in real time.</p>
+          </section>
 
-      <section id="error" class="error" hidden></section>
+          <section id="engineering-timeline" class="card engineering-timeline timeline-panel" hidden>
+            <div class="timeline-header">
+              <div>
+                <h2 class="panel-heading">Build Timeline</h2>
+                <p class="panel-subtext">Live engineering progress</p>
+              </div>
+              <div class="timeline-progress-wrap">
+                <span id="timeline-progress-label" class="timeline-progress-label">0%</span>
+                <div class="timeline-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  <div id="timeline-progress-bar" class="timeline-progress-bar"></div>
+                </div>
+              </div>
+            </div>
+            <div id="timeline-stages" class="timeline-stages scroll-panel"></div>
+          </section>
 
-      <section id="results" class="results" hidden>
-        <h2>Build Result</h2>
-        <dl>
-          <dt>Status</dt>
-          <dd id="status"></dd>
-          <dt>Prompt</dt>
-          <dd id="result-prompt"></dd>
-          <dt>Detected app type</dt>
-          <dd id="app-type"></dd>
-          <dt>Duration</dt>
-          <dd id="duration"></dd>
-          <dt>Project folder</dt>
-          <dd id="project-folder"></dd>
-          <dt>Generated files</dt>
-          <dd id="generated-files"></dd>
-          <dt>npm install result</dt>
-          <dd id="install-result"></dd>
-          <dt>npm build result</dt>
-          <dd id="build-result"></dd>
-          <dt>Live Preview URL</dt>
-          <dd id="preview-url"></dd>
-        </dl>
-        <h3>Final report</h3>
-        <pre id="final-report"></pre>
-      </section>
-    </main>
+          <section id="progress" class="progress" hidden>
+            <p id="progress-text">Generating project...</p>
+          </section>
+        </main>
+
+        <aside class="sidebar-column" id="sidebar">
+          <div class="card sidebar-card sidebar-hint" id="sidebar-hint">
+            <p>Build results will appear here — status, preview, and quick actions.</p>
+          </div>
+
+          <div class="card sidebar-card" id="build-metadata" hidden>
+            <h3 class="sidebar-heading">Current Build</h3>
+            <dl class="metric-list">
+              <div class="metric-row">
+                <dt>Application Type</dt>
+                <dd id="sidebar-app-type" class="metric-value">—</dd>
+              </div>
+              <div class="metric-row">
+                <dt>UI Strategy</dt>
+                <dd id="sidebar-ui-strategy" class="metric-value">—</dd>
+              </div>
+              <div class="metric-row">
+                <dt>Build Status</dt>
+                <dd id="sidebar-status" class="metric-value">—</dd>
+              </div>
+              <div class="metric-row">
+                <dt>Preview Ready</dt>
+                <dd id="sidebar-preview-ready" class="metric-value">—</dd>
+              </div>
+            </dl>
+            <details class="advanced-engineering" id="advanced-engineering">
+              <summary>Advanced Engineering</summary>
+              <dl class="metric-list advanced-metrics">
+                <div class="metric-row">
+                  <dt>Build Time</dt>
+                  <dd id="sidebar-duration" class="metric-value">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Ready</dt>
+                  <dd id="sidebar-ready" class="metric-value">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Preview verification</dt>
+                  <dd id="sidebar-preview-verification" class="metric-value badge">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Feature Reality</dt>
+                  <dd id="sidebar-feature-reality" class="metric-value badge">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Product Quality</dt>
+                  <dd id="sidebar-product-quality" class="metric-value">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Build Loop</dt>
+                  <dd id="sidebar-build-loop" class="metric-value badge">—</dd>
+                </div>
+              </dl>
+            </details>
+          </div>
+
+          <section id="build-summary" class="card build-summary sidebar-ready-panel" hidden>
+            <div id="build-summary-content" class="build-summary-content"></div>
+            <div id="build-summary-actions" class="build-summary-actions"></div>
+          </section>
+
+          <section id="preview-cta" class="card preview-cta sidebar-preview-cta" hidden>
+            <div class="preview-cta-inner">
+              <div>
+                <h3 class="preview-cta-title">Preview ready</h3>
+                <p id="preview-cta-url" class="preview-cta-url"></p>
+              </div>
+              <div class="preview-cta-actions">
+                <a id="preview-cta-open" class="btn-primary btn-sm" href="#" target="_blank" rel="noopener noreferrer">Open Preview</a>
+                <button type="button" id="preview-cta-all" class="btn-secondary btn-sm">View all previews</button>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <div id="report-drawer" class="report-drawer" hidden aria-hidden="true">
+      <button type="button" id="report-drawer-backdrop" class="report-drawer-backdrop" aria-label="Close engineering report"></button>
+      <div class="report-drawer-panel" role="dialog" aria-labelledby="report-drawer-title">
+        <div class="report-drawer-header">
+          <h2 id="report-drawer-title">Engineering Report</h2>
+          <button type="button" id="close-report-drawer" class="btn-ghost btn-sm">Close</button>
+        </div>
+        <div class="report-drawer-body scroll-panel">
+          <section id="results" class="report-section">
+            <p class="panel-subtext report-drawer-intro">Full Build Report evidence for validation and debugging.</p>
+            <section id="quick-report" class="card quick-report" hidden>
+              <h2 class="quick-report-title">Application Ready</h2>
+              <dl class="quick-report-grid">
+                <div class="metric-row">
+                  <dt>Application</dt>
+                  <dd id="quick-app-name">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Preview</dt>
+                  <dd id="quick-preview-status">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Project Folder</dt>
+                  <dd id="quick-project-folder" class="quick-path">—</dd>
+                </div>
+                <div class="metric-row">
+                  <dt>Build Time</dt>
+                  <dd id="quick-build-time">—</dd>
+                </div>
+              </dl>
+              <div class="quick-report-actions">
+                <a id="quick-open-preview" class="btn-primary btn-sm" href="#" target="_blank" rel="noopener noreferrer" hidden>Open Preview</a>
+                <button type="button" id="quick-open-folder" class="btn-secondary btn-sm" hidden>Copy Project Path</button>
+              </div>
+            </section>
+
+            <div class="report-cards">
+              <details class="report-card" id="card-understanding" hidden>
+                <summary>Understanding</summary>
+                <section id="understanding" class="understanding" hidden>
+                  <dl>
+                    <dt>Detected intent</dt>
+                    <dd id="understanding-intent"></dd>
+                    <dt>Suggested app name</dt>
+                    <dd id="understanding-app-name"></dd>
+                    <dt>Detected features</dt>
+                    <dd id="understanding-features"></dd>
+                    <dt>Confidence</dt>
+                    <dd id="understanding-confidence"></dd>
+                    <dt>Supported</dt>
+                    <dd id="understanding-supported"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-build-plan" hidden>
+                <summary id="build-plan-title">Build Plan</summary>
+                <section id="build-plan" class="build-plan" hidden>
+                  <dl>
+                    <dt>App name</dt>
+                    <dd id="plan-app-name"></dd>
+                    <dt>Features</dt>
+                    <dd id="plan-features"></dd>
+                    <dt>Pages</dt>
+                    <dd id="plan-pages"></dd>
+                    <dt>Components</dt>
+                    <dd id="plan-components"></dd>
+                    <dt>Project structure</dt>
+                    <dd id="plan-structure"></dd>
+                    <dt>Stack</dt>
+                    <dd id="plan-stack"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-architecture" hidden>
+                <summary>Architecture</summary>
+                <section id="architecture" class="architecture" hidden>
+                  <dl>
+                    <dt>Project type</dt>
+                    <dd id="arch-project-type"></dd>
+                    <dt>Recommended stack</dt>
+                    <dd id="arch-stack"></dd>
+                    <dt>Folders</dt>
+                    <dd id="arch-folders"></dd>
+                    <dt>Files</dt>
+                    <dd id="arch-files"></dd>
+                    <dt>Components</dt>
+                    <dd id="arch-components"></dd>
+                    <dt>Pages</dt>
+                    <dd id="arch-pages"></dd>
+                    <dt>State management</dt>
+                    <dd id="arch-state"></dd>
+                    <dt>Routing</dt>
+                    <dd id="arch-routing"></dd>
+                    <dt>Data layer</dt>
+                    <dd id="arch-data-layer"></dd>
+                    <dt>Styling</dt>
+                    <dd id="arch-styling"></dd>
+                    <dt>Testing strategy</dt>
+                    <dd id="arch-testing"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-architecture-generation" hidden>
+                <summary>Architecture-Guided Generation</summary>
+                <section id="architecture-generation" class="architecture-generation" hidden>
+                  <dl>
+                    <dt>Applied</dt>
+                    <dd id="arch-gen-applied"></dd>
+                    <dt>Components</dt>
+                    <dd id="arch-gen-components"></dd>
+                    <dt>Pages</dt>
+                    <dd id="arch-gen-pages"></dd>
+                    <dt>Services</dt>
+                    <dd id="arch-gen-services"></dd>
+                    <dt>Generated structure summary</dt>
+                    <dd id="arch-gen-structure"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-feature-reality" hidden>
+                <summary>Feature Reality</summary>
+                <section id="feature-reality" class="feature-reality" hidden>
+                  <dl>
+                    <dt>Status</dt>
+                    <dd id="feature-reality-status"></dd>
+                    <dt>Confidence score</dt>
+                    <dd id="feature-reality-confidence"></dd>
+                    <dt>Requested features</dt>
+                    <dd id="feature-reality-requested"></dd>
+                    <dt>Generated evidence</dt>
+                    <dd id="feature-reality-generated"></dd>
+                    <dt>Rendered evidence</dt>
+                    <dd id="feature-reality-rendered"></dd>
+                    <dt>Missing features</dt>
+                    <dd id="feature-reality-missing"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-ui-strategy" hidden>
+                <summary>UI Strategy</summary>
+                <section id="ui-strategy" class="ui-strategy" hidden>
+                  <dl>
+                    <dt>Strategy</dt>
+                    <dd id="ui-strategy-name"></dd>
+                    <dt>Layout pattern</dt>
+                    <dd id="ui-strategy-layout-pattern"></dd>
+                    <dt>Primary user goal</dt>
+                    <dd id="ui-strategy-primary-goal"></dd>
+                    <dt>Reason selected</dt>
+                    <dd id="ui-strategy-reason"></dd>
+                    <dt>Primary surface</dt>
+                    <dd id="ui-strategy-primary-surface"></dd>
+                    <dt>Interaction model</dt>
+                    <dd id="ui-strategy-interaction"></dd>
+                    <dt>Generated layout components</dt>
+                    <dd id="ui-strategy-components"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-product-quality" hidden>
+                <summary>Product Quality</summary>
+                <section id="product-quality" class="product-quality" hidden>
+                  <dl>
+                    <dt>Overall quality score</dt>
+                    <dd id="product-quality-score"></dd>
+                    <dt>Design components used</dt>
+                    <dd id="product-quality-design"></dd>
+                    <dt>Accessibility support</dt>
+                    <dd id="product-quality-accessibility"></dd>
+                    <dt>CRUD quality</dt>
+                    <dd id="product-quality-crud"></dd>
+                    <dt>Layout quality</dt>
+                    <dd id="product-quality-layout"></dd>
+                    <dt>Responsive layout</dt>
+                    <dd id="product-quality-responsive"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-preview-verification" hidden>
+                <summary>Preview Verification</summary>
+                <section id="preview-verification" class="preview-verification" hidden>
+                  <dl>
+                    <dt>Status</dt>
+                    <dd id="preview-verification-status"></dd>
+                    <dt>Preview URL</dt>
+                    <dd id="preview-verification-url"></dd>
+                    <dt>HTTP status</dt>
+                    <dd id="preview-verification-http-status"></dd>
+                    <dt>HTTP reachable</dt>
+                    <dd id="preview-verification-http-reachable"></dd>
+                    <dt>Application rendered</dt>
+                    <dd id="preview-verification-rendered"></dd>
+                    <dt>Duration</dt>
+                    <dd id="preview-verification-duration"></dd>
+                    <dt>Evidence</dt>
+                    <dd id="preview-verification-evidence"></dd>
+                    <dt>Warnings</dt>
+                    <dd id="preview-verification-warnings"></dd>
+                    <dt>Final verdict</dt>
+                    <dd id="preview-verification-verdict"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-build-loop" hidden>
+                <summary>Build Loop</summary>
+                <section id="build-loop" class="build-loop" hidden>
+                  <dl>
+                    <dt>Current stage</dt>
+                    <dd id="build-loop-current-stage"></dd>
+                    <dt>Completed stages</dt>
+                    <dd id="build-loop-stages"></dd>
+                    <dt>Duration</dt>
+                    <dd id="build-loop-duration"></dd>
+                    <dt>Preview URL</dt>
+                    <dd id="build-loop-preview-url"></dd>
+                    <dt>Verification result</dt>
+                    <dd id="build-loop-verification"></dd>
+                    <dt>Final verdict</dt>
+                    <dd id="build-loop-verdict"></dd>
+                    <dt>Warnings</dt>
+                    <dd id="build-loop-warnings"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-engineering-timeline-report" hidden>
+                <summary>Engineering Timeline</summary>
+                <section id="engineering-timeline-report" class="engineering-timeline-report" hidden>
+                  <dl>
+                    <dt>Overall progress</dt>
+                    <dd id="timeline-overall-progress"></dd>
+                    <dt>Engineering time</dt>
+                    <dd id="timeline-engineering-time"></dd>
+                    <dt>Timeline health</dt>
+                    <dd id="timeline-health"></dd>
+                    <dt>Slowest stage</dt>
+                    <dd id="timeline-slowest"></dd>
+                    <dt>Fastest stage</dt>
+                    <dd id="timeline-fastest"></dd>
+                    <dt>Stage history</dt>
+                    <dd id="timeline-stage-history"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-generic-capability" hidden>
+                <summary>Generic Application Capability</summary>
+                <section id="generic-application-capability" class="generic-application-capability" hidden>
+                  <dl>
+                    <dt>Capability score</dt>
+                    <dd id="generic-capability-score"></dd>
+                    <dt>UI patterns used</dt>
+                    <dd id="generic-ui-patterns"></dd>
+                    <dt>Data patterns used</dt>
+                    <dd id="generic-data-patterns"></dd>
+                    <dt>CRUD support</dt>
+                    <dd id="generic-crud-capabilities"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-real-app-trials" hidden>
+                <summary>Real App Trials</summary>
+                <section id="real-app-trials" class="real-app-trials" hidden>
+                  <dl>
+                    <dt>Overall summary</dt>
+                    <dd id="trial-summary"></dd>
+                    <dt>Success rate</dt>
+                    <dd id="trial-success-rate"></dd>
+                    <dt>Average build time</dt>
+                    <dd id="trial-average-time"></dd>
+                    <dt>Tested applications</dt>
+                    <dd id="trial-applications"></dd>
+                  </dl>
+                </section>
+              </details>
+
+              <details class="report-card" id="card-generated-files" hidden>
+                <summary>Generated Files</summary>
+                <div class="report-card-body">
+                  <dl>
+                    <dt>Status</dt>
+                    <dd id="status"></dd>
+                    <dt>Prompt</dt>
+                    <dd id="result-prompt"></dd>
+                    <dt>Detected app type</dt>
+                    <dd id="app-type"></dd>
+                    <dt>Generation mode</dt>
+                    <dd id="generation-mode"></dd>
+                    <dt>Duration</dt>
+                    <dd id="duration"></dd>
+                    <dt>Project folder</dt>
+                    <dd id="project-folder"></dd>
+                    <dt>Generated files</dt>
+                    <dd><ul id="generated-files"></ul></dd>
+                    <dt>npm install result</dt>
+                    <dd id="install-result"></dd>
+                    <dt>npm build result</dt>
+                    <dd id="build-result"></dd>
+                    <dt>Live Preview URL</dt>
+                    <dd id="preview-url"></dd>
+                  </dl>
+                </div>
+              </details>
+
+              <details class="report-card" id="card-final-report" hidden>
+                <summary>Final Report</summary>
+                <pre id="final-report" class="final-report-block"></pre>
+              </details>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="previews-panel" class="previews-panel card" hidden>
+      <div class="previews-panel-header">
+        <h3>Active Previews</h3>
+        <button type="button" id="close-previews-panel" class="btn-ghost btn-sm">Close</button>
+      </div>
+      <ul id="previews-list" class="previews-list scroll-panel"></ul>
+    </div>
+
     <script src="/app.js"></script>
   </body>
 </html>

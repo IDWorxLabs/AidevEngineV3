@@ -6,6 +6,9 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { BuildReport } from '../src/types.js';
+import { assertBuildPlan } from './regression-build-plan.js';
+import { assertUnderstanding } from './regression-understanding.js';
+import { assertGenerationMode } from './regression-generation-mode.js';
 
 export const API_PATH_PROMPT = 'Build a calculator app';
 const API_PORT = 39247;
@@ -123,6 +126,18 @@ function assertApiResponse(data: BuildApiResponse, httpOk: boolean): void {
 
   if (data.reportText && data.reportText.length > 0) pass('final report text present');
   else fail('final report text present');
+
+  if (report) {
+    assertUnderstanding(
+      report,
+      data.reportText ?? '',
+      { expectSupported: true, expectMatchedAppType: 'calculator', minConfidence: 0.95 },
+      pass,
+      fail,
+    );
+    assertGenerationMode(report, data.reportText ?? '', 'specialized-template', pass, fail);
+    assertBuildPlan(report, data.reportText ?? '', 'calculator', pass, fail);
+  }
 }
 
 export async function runApiPathRegression(): Promise<boolean> {
@@ -169,7 +184,7 @@ export async function runApiPathRegression(): Promise<boolean> {
 
   console.log('');
   if (failures.length === 0) {
-    console.log('PASSED (11 checks)\n');
+    console.log('PASSED (21 checks)\n');
     return true;
   }
 

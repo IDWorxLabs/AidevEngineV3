@@ -99,9 +99,59 @@ Run the web UI regression (browser test of the builder interface):
 npm run validate:web-ui
 ```
 
+Run the unsupported prompt regression:
+
+```bash
+npm run validate:unsupported-path
+```
+
+## Build repair loop (test-only)
+
+The prompt `"Build a broken calculator app"` injects one broken import, fails the first build, runs a single deterministic repair, then rebuilds successfully.
+
+Run the repair path regression:
+
+```bash
+npm run validate:repair-path
+```
+
+## Universal requirement understanding
+
+Every prompt is analyzed before planning. Supported prompts get high-confidence matches; unsupported prompts still receive a structured understanding report.
+
+Run the understanding regression:
+
+```bash
+npm run validate:understanding
+```
+
+## Unsupported app plan drafting
+
+Unsupported prompts (no specialized template) receive a **draft Build Plan** from the understanding report before prototype generation.
+
+## Generic application prototype
+
+Prompts without a specialized template (e.g. `"Build a weather app"`) now generate a working Vite + React + TypeScript prototype scaffold from the draft build plan.
+
+Run the generic prototype regression:
+
+```bash
+npm run validate:generic-prototype
+```
+
+## Architecture planning
+
+Every build now includes an **Architecture Plan** between the build plan and code generation (folders, files, components, pages, stack, state, routing, data layer).
+
+Run the architecture regression:
+
+```bash
+npm run validate:architecture
+```
+
 ## Validate all
 
-Run typecheck plus all app, API, and web UI regressions:
+Run typecheck plus all regressions including architecture:
 
 ```bash
 npm run validate:all

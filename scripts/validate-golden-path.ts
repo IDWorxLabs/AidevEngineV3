@@ -2,11 +2,12 @@
  * Entry point for npm run validate:golden-path
  */
 
+import { exitAfterRegression } from './validate-exit.js';
 import { runGoldenPathRegression } from './golden-path-regression.js';
 
 runGoldenPathRegression()
-  .then((ok) => process.exit(ok ? 0 : 1))
+  .then((ok) => exitAfterRegression(ok))
   .catch((err) => {
     console.error(err);
-    process.exit(1);
+    exitAfterRegression(false);
   });

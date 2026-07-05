@@ -1,13 +1,13 @@
 import type { AppType } from '../types.js';
 
 const CALCULATOR_PATTERN = /\bcalculator\b/i;
-const COUNTER_APP_PATTERN = /counter app/i;
-const TODO_APP_PATTERN = /(?:todo app|to-do app|task app)/i;
+const COUNTER_PATTERN = /\bcounter\b/i;
+const TODO_PATTERN = /\b(?:todo|to-do)\b/i;
 
 export function detectAppType(prompt: string): AppType {
   if (CALCULATOR_PATTERN.test(prompt)) return 'calculator';
-  if (COUNTER_APP_PATTERN.test(prompt)) return 'counter';
-  if (TODO_APP_PATTERN.test(prompt)) return 'todo';
+  if (COUNTER_PATTERN.test(prompt)) return 'counter';
+  if (TODO_PATTERN.test(prompt)) return 'todo';
   return 'unknown';
 }
 

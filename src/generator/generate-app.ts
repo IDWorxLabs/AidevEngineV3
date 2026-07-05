@@ -1,21 +1,21 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import type { AppType, GeneratedFile } from '../types.js';
+import type { BuildPlan, GeneratedFile } from '../types.js';
 import { buildCalculatorAppFiles } from './templates/calculator.js';
 import { buildCounterAppFiles } from './templates/counter.js';
 import { buildTodoAppFiles } from './templates/todo.js';
 
-export function resolveAppFiles(appType: AppType, projectName: string): GeneratedFile[] {
-  switch (appType) {
+export function resolveAppFiles(plan: BuildPlan, projectName: string): GeneratedFile[] {
+  switch (plan.appType) {
     case 'calculator':
-      return buildCalculatorAppFiles(projectName);
+      return buildCalculatorAppFiles(plan, projectName);
     case 'counter':
-      return buildCounterAppFiles(projectName);
+      return buildCounterAppFiles(plan, projectName);
     case 'todo':
-      return buildTodoAppFiles(projectName);
+      return buildTodoAppFiles(plan, projectName);
     default:
       throw new Error(
-        `Unsupported app type: ${appType}. Try "Build a calculator app", "Build a counter app", or "Build a todo app".`,
+        `Unsupported app type: ${plan.appType}. Try "Build a calculator app", "Build a counter app", or "Build a todo app".`,
       );
   }
 }

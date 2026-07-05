@@ -6,6 +6,11 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildFromPrompt } from '../src/build/orchestrator.js';
 import { formatBuildReport } from '../src/report/format-report.js';
+import { assertBuildPlan } from './regression-build-plan.js';
+import { assertGeneratedAppUsesPlanAppName } from './regression-generated-app.js';
+import { assertUnderstanding } from './regression-understanding.js';
+import { assertGenerationMode } from './regression-generation-mode.js';
+import { assertArchitecture } from './regression-architecture.js';
 
 export const COUNTER_PATH_PROMPT = 'Build a counter app';
 
@@ -99,10 +104,27 @@ export async function runCounterPathRegression(): Promise<boolean> {
   }
 
   assertReportText(reportText, report);
+  assertUnderstanding(
+    report,
+    reportText,
+    { expectSupported: true, expectMatchedAppType: 'counter', minConfidence: 0.95 },
+    pass,
+    fail,
+  );
+  assertGenerationMode(report, reportText, 'specialized-template', pass, fail);
+  assertArchitecture(
+    report,
+    reportText,
+    { expectProjectType: 'Counter utility application', expectPages: ['Counter'] },
+    pass,
+    fail,
+  );
+  assertBuildPlan(report, reportText, 'counter', pass, fail);
+  assertGeneratedAppUsesPlanAppName(report, pass, fail);
 
   console.log('');
   if (failures.length === 0) {
-    const total = 1 + 1 + REQUIRED_ROOT_FILES.length + REQUIRED_SRC_FILES.length + 3 + 7;
+    const total = 1 + 1 + REQUIRED_ROOT_FILES.length + REQUIRED_SRC_FILES.length + 3 + 7 + 10 + 1;
     console.log(`PASSED (${total} checks)\n`);
     return true;
   }

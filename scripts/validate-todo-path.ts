@@ -1,8 +1,9 @@
+import { exitAfterRegression } from './validate-exit.js';
 import { runTodoPathRegression } from './todo-path-regression.js';
 
 runTodoPathRegression()
-  .then((ok) => process.exit(ok ? 0 : 1))
+  .then((ok) => exitAfterRegression(ok))
   .catch((err) => {
     console.error(err);
-    process.exit(1);
+    exitAfterRegression(false);
   });
