@@ -22,6 +22,9 @@ import type { WorkflowReport } from '../../workflow/workflow-types.js';
 import { applyProductExperienceToLayout } from '../../product-experience/product-experience-renderer.js';
 import { buildProductExperienceReport } from '../../product-experience/product-experience-report.js';
 import type { ProductExperienceReport } from '../../product-experience/product-experience-types.js';
+import { applyProductArchitectureToLayout } from '../../product-architecture/product-architecture-renderer.js';
+import { buildProductArchitectureReport } from '../../product-architecture/product-architecture-report.js';
+import type { ProductArchitectureReport } from '../../product-architecture/product-architecture-types.js';
 import {
   baseProjectFiles,
   type ArchitectureGuidedInput,
@@ -41,6 +44,7 @@ export interface GenericCrudWorkspaceResult {
   uiStrategy: UiStrategyReport;
   workflowIntelligence: WorkflowReport;
   productExperience: ProductExperienceReport;
+  productArchitecture: ProductArchitectureReport;
 }
 
 function buildEntityService(entitySlug: string, creation: DomainCreationProfile): string {
@@ -611,8 +615,14 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     projectName,
   };
 
-  const { domainProfile, creationProfile, uiStrategySelection, workflowModel, productExperienceModel } =
-    experiencePlan;
+  const {
+    domainProfile,
+    creationProfile,
+    uiStrategySelection,
+    workflowModel,
+    productExperienceModel,
+    productArchitectureModel,
+  } = experiencePlan;
 
   let layoutResult = buildUiLayoutHomePage({
     appName: buildPlan.appName,
@@ -623,6 +633,7 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
 
   layoutResult = applyWorkflowToLayout(layoutResult, workflowModel, creationProfile);
   layoutResult = applyProductExperienceToLayout(layoutResult, productExperienceModel, creationProfile);
+  layoutResult = applyProductArchitectureToLayout(layoutResult, productArchitectureModel);
 
   const uiStrategy: UiStrategyReport = {
     ...uiStrategySelection.report,
@@ -683,5 +694,6 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     uiStrategy,
     workflowIntelligence: buildWorkflowReport(workflowModel),
     productExperience: buildProductExperienceReport(productExperienceModel),
+    productArchitecture: buildProductArchitectureReport(productArchitectureModel),
   };
 }

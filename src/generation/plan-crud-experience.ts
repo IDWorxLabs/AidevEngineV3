@@ -20,6 +20,13 @@ import type {
   ProductExperienceModel,
   ProductExperienceReport,
 } from '../product-experience/product-experience-types.js';
+import { buildProductArchitectureModel } from '../product-architecture/product-architecture-engine.js';
+import { validateProductArchitectureModel } from '../product-architecture/product-architecture-validator.js';
+import { buildProductArchitectureReport } from '../product-architecture/product-architecture-report.js';
+import type {
+  ProductArchitectureModel,
+  ProductArchitectureReport,
+} from '../product-architecture/product-architecture-types.js';
 
 export interface CrudExperiencePlan {
   domainProfile: ApplicationDomainProfile;
@@ -27,12 +34,14 @@ export interface CrudExperiencePlan {
   uiStrategySelection: UiStrategySelectionResult;
   workflowModel: WorkflowModel;
   productExperienceModel: ProductExperienceModel;
+  productArchitectureModel: ProductArchitectureModel;
 }
 
 export interface PlannedCrudExperience {
   plan: CrudExperiencePlan;
   workflowReport: WorkflowReport;
   productExperienceReport: ProductExperienceReport;
+  productArchitectureReport: ProductArchitectureReport;
 }
 
 export function planCrudExperience(input: {
@@ -77,6 +86,19 @@ export function planCrudExperience(input: {
     );
   }
 
+  const productArchitectureModel = buildProductArchitectureModel({
+    domainProfile,
+    workflowModel,
+    productExperienceModel,
+  });
+
+  const productArchitectureValidation = validateProductArchitectureModel(productArchitectureModel);
+  if (!productArchitectureValidation.valid) {
+    throw new Error(
+      `Product architecture validation failed: ${productArchitectureValidation.errors.join('; ')}`,
+    );
+  }
+
   return {
     plan: {
       domainProfile,
@@ -84,9 +106,11 @@ export function planCrudExperience(input: {
       uiStrategySelection,
       workflowModel,
       productExperienceModel,
+      productArchitectureModel,
     },
     workflowReport: buildWorkflowReport(workflowModel),
     productExperienceReport: buildProductExperienceReport(productExperienceModel),
+    productArchitectureReport: buildProductArchitectureReport(productArchitectureModel),
   };
 }
 

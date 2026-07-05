@@ -17,6 +17,7 @@ const productQualityEl = document.getElementById('product-quality');
 const uiStrategyEl = document.getElementById('ui-strategy');
 const workflowIntelligenceEl = document.getElementById('workflow-intelligence');
 const productExperienceEl = document.getElementById('product-experience');
+const productArchitectureEl = document.getElementById('product-architecture');
 const realAppTrialsEl = document.getElementById('real-app-trials');
 const engineeringTimelineEl = document.getElementById('engineering-timeline');
 const timelineStagesEl = document.getElementById('timeline-stages');
@@ -49,6 +50,7 @@ const REPORT_CARD_MAP = [
   ['ui-strategy', 'card-ui-strategy'],
   ['workflow-intelligence', 'card-workflow-intelligence'],
   ['product-experience', 'card-product-experience'],
+  ['product-architecture', 'card-product-architecture'],
   ['preview-verification', 'card-preview-verification'],
   ['build-loop', 'card-build-loop'],
   ['engineering-timeline-report', 'card-engineering-timeline-report'],
@@ -133,6 +135,7 @@ function resetWorkspaceUI(options = {}) {
   uiStrategyEl.hidden = true;
   workflowIntelligenceEl.hidden = true;
   productExperienceEl.hidden = true;
+  productArchitectureEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
 
@@ -174,6 +177,8 @@ function renderSidebarMetrics(report) {
     report.uiStrategy?.strategyName ?? report.uiStrategy?.layoutPattern ?? '—';
   document.getElementById('sidebar-experience').textContent =
     report.productExperience?.experienceSummary ?? '—';
+  document.getElementById('sidebar-architecture-summary').textContent =
+    report.productArchitecture?.architectureSummary ?? '—';
   document.getElementById('sidebar-preview-ready').textContent = report.previewUrl ? 'Yes' : 'No';
 
   document.getElementById('sidebar-duration').textContent = `${(report.durationMs / 1000).toFixed(1)}s`;
@@ -256,6 +261,7 @@ function showTimelineBuild() {
   uiStrategyEl.hidden = true;
   workflowIntelligenceEl.hidden = true;
   productExperienceEl.hidden = true;
+  productArchitectureEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
   timelineIdleEl.hidden = true;
@@ -855,6 +861,35 @@ function renderProductExperience(experience) {
   syncReportCards();
 }
 
+function renderProductArchitecture(architecture) {
+  if (!architecture) {
+    productArchitectureEl.hidden = true;
+    syncReportCards();
+    return;
+  }
+
+  productArchitectureEl.hidden = false;
+  document.getElementById('paie-product-type').textContent = architecture.productType;
+  document.getElementById('paie-product-goal').textContent = architecture.productGoal;
+  document.getElementById('paie-confidence').textContent = architecture.architectureConfidence.toFixed(2);
+  renderList('paie-primary-modules', architecture.primaryModules ?? []);
+  renderList('paie-secondary-modules', architecture.secondaryModules ?? []);
+  renderList('paie-admin-modules', architecture.adminModules ?? []);
+  renderList('paie-settings-modules', architecture.settingsModules ?? []);
+  renderList('paie-user-roles', architecture.userRoles ?? []);
+  renderList('paie-permission-model', architecture.permissionModel ?? []);
+  renderList('paie-data-entities', architecture.dataEntities ?? []);
+  renderList('paie-entity-relationships', architecture.entityRelationships ?? []);
+  renderList('paie-product-boundaries', architecture.productBoundaries ?? []);
+  renderList('paie-navigation-architecture', architecture.navigationArchitecture ?? []);
+  renderList('paie-notification-model', architecture.notificationModel ?? []);
+  renderList('paie-integration-readiness', architecture.integrationReadiness ?? []);
+  renderList('paie-extensibility-plan', architecture.extensibilityPlan ?? []);
+  renderList('paie-risk-areas', architecture.riskAreas ?? []);
+  renderList('paie-future-capabilities', architecture.futureCapabilities ?? []);
+  syncReportCards();
+}
+
 function renderProductQuality(quality) {
   if (!quality) {
     productQualityEl.hidden = true;
@@ -1095,6 +1130,7 @@ function renderResults(data) {
   renderUiStrategy(report.uiStrategy);
   renderWorkflowIntelligence(report.workflowIntelligence);
   renderProductExperience(report.productExperience);
+  renderProductArchitecture(report.productArchitecture);
   renderBuildLoop(report.buildLoop);
   renderPreviewVerification(report.previewVerification);
   renderRealAppTrials(report.realAppTrialResults);

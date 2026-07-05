@@ -13,6 +13,7 @@ import type {
   UiStrategyReport,
   WorkflowReport,
   ProductExperienceReport,
+  ProductArchitectureReport,
   UnderstandingReport,
 } from '../types.js';
 import { formatStageDuration } from '../runtime/live-engineering-timeline.js';
@@ -272,6 +273,77 @@ export function formatProductExperienceSection(
   ];
 }
 
+export function formatProductArchitectureSection(
+  architecture: ProductArchitectureReport,
+): string[] {
+  return [
+    '──────────────── Product Architecture Intelligence ────────────────',
+    `Product Type:           ${architecture.productType}`,
+    `Product Goal:           ${architecture.productGoal}`,
+    'Primary Modules:',
+    ...(architecture.primaryModules.length > 0
+      ? formatList(architecture.primaryModules)
+      : ['  (none)']),
+    'Secondary Modules:',
+    ...(architecture.secondaryModules.length > 0
+      ? formatList(architecture.secondaryModules)
+      : ['  (none)']),
+    'Admin Modules:',
+    ...(architecture.adminModules.length > 0
+      ? formatList(architecture.adminModules)
+      : ['  (none)']),
+    'Settings Modules:',
+    ...(architecture.settingsModules.length > 0
+      ? formatList(architecture.settingsModules)
+      : ['  (none)']),
+    'User Roles:',
+    ...(architecture.userRoles.length > 0
+      ? formatList(architecture.userRoles)
+      : ['  (none)']),
+    'Permission Model:',
+    ...(architecture.permissionModel.length > 0
+      ? formatList(architecture.permissionModel)
+      : ['  (none)']),
+    'Data Entities:',
+    ...(architecture.dataEntities.length > 0
+      ? formatList(architecture.dataEntities)
+      : ['  (none)']),
+    'Entity Relationships:',
+    ...(architecture.entityRelationships.length > 0
+      ? formatList(architecture.entityRelationships)
+      : ['  (none)']),
+    'Product Boundaries:',
+    ...(architecture.productBoundaries.length > 0
+      ? formatList(architecture.productBoundaries)
+      : ['  (none)']),
+    'Navigation Architecture:',
+    ...(architecture.navigationArchitecture.length > 0
+      ? formatList(architecture.navigationArchitecture)
+      : ['  (none)']),
+    'Notification Model:',
+    ...(architecture.notificationModel.length > 0
+      ? formatList(architecture.notificationModel)
+      : ['  (none)']),
+    'Integration Readiness:',
+    ...(architecture.integrationReadiness.length > 0
+      ? formatList(architecture.integrationReadiness)
+      : ['  (none)']),
+    'Extensibility Plan:',
+    ...(architecture.extensibilityPlan.length > 0
+      ? formatList(architecture.extensibilityPlan)
+      : ['  (none)']),
+    'Risk Areas:',
+    ...(architecture.riskAreas.length > 0
+      ? formatList(architecture.riskAreas)
+      : ['  (none)']),
+    'Future Capabilities:',
+    ...(architecture.futureCapabilities.length > 0
+      ? formatList(architecture.futureCapabilities)
+      : ['  (none)']),
+    `Architecture Confidence: ${architecture.architectureConfidence.toFixed(2)}`,
+  ];
+}
+
 export function formatUiStrategySection(uiStrategy: UiStrategyReport): string[] {
   return [
     '── UI Strategy ──',
@@ -503,6 +575,10 @@ export function formatBuildReport(report: BuildReport): string {
 
   if (report.productExperience) {
     lines.push('', ...formatProductExperienceSection(report.productExperience));
+  }
+
+  if (report.productArchitecture) {
+    lines.push('', ...formatProductArchitectureSection(report.productArchitecture));
   }
 
   if (report.uiStrategy) {
