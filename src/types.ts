@@ -80,6 +80,7 @@ export type { UiStrategyReport } from './generation/ui-strategy/ui-strategy-type
 export type { WorkflowReport } from './workflow/workflow-types.js';
 export type { ProductExperienceReport } from './product-experience/product-experience-types.js';
 export type { ProductArchitectureReport } from './product-architecture/product-architecture-types.js';
+export type { ProductDesignReport } from './product-design/product-design-types.js';
 export type {
   EngineeringTimeline,
   EngineeringTimelineEvent,
@@ -93,6 +94,7 @@ import type { UiStrategyReport } from './generation/ui-strategy/ui-strategy-type
 import type { WorkflowReport } from './workflow/workflow-types.js';
 import type { ProductExperienceReport } from './product-experience/product-experience-types.js';
 import type { ProductArchitectureReport } from './product-architecture/product-architecture-types.js';
+import type { ProductDesignReport } from './product-design/product-design-types.js';
 import type { EngineeringTimeline, TimelineEventCallback } from './runtime/live-engineering-timeline.js';
 
 export interface GeneratedFile {
@@ -118,6 +120,7 @@ export interface BuildReport {
   workflowIntelligence: WorkflowReport | null;
   productExperience: ProductExperienceReport | null;
   productArchitecture: ProductArchitectureReport | null;
+  productDesign: ProductDesignReport | null;
   engineeringTimeline: EngineeringTimeline | null;
   generationMode: GenerationMode | null;
   projectId: string;

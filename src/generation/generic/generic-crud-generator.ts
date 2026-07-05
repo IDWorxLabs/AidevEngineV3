@@ -25,6 +25,9 @@ import type { ProductExperienceReport } from '../../product-experience/product-e
 import { applyProductArchitectureToLayout } from '../../product-architecture/product-architecture-renderer.js';
 import { buildProductArchitectureReport } from '../../product-architecture/product-architecture-report.js';
 import type { ProductArchitectureReport } from '../../product-architecture/product-architecture-types.js';
+import { applyProductDesignToLayout } from '../../product-design/product-design-renderer.js';
+import { buildProductDesignReport } from '../../product-design/product-design-report.js';
+import type { ProductDesignReport } from '../../product-design/product-design-types.js';
 import {
   baseProjectFiles,
   type ArchitectureGuidedInput,
@@ -45,6 +48,7 @@ export interface GenericCrudWorkspaceResult {
   workflowIntelligence: WorkflowReport;
   productExperience: ProductExperienceReport;
   productArchitecture: ProductArchitectureReport;
+  productDesign: ProductDesignReport;
 }
 
 function buildEntityService(entitySlug: string, creation: DomainCreationProfile): string {
@@ -622,6 +626,7 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     workflowModel,
     productExperienceModel,
     productArchitectureModel,
+    productDesignModel,
   } = experiencePlan;
 
   let layoutResult = buildUiLayoutHomePage({
@@ -634,6 +639,7 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
   layoutResult = applyWorkflowToLayout(layoutResult, workflowModel, creationProfile);
   layoutResult = applyProductExperienceToLayout(layoutResult, productExperienceModel, creationProfile);
   layoutResult = applyProductArchitectureToLayout(layoutResult, productArchitectureModel);
+  layoutResult = applyProductDesignToLayout(layoutResult, productDesignModel);
 
   const uiStrategy: UiStrategyReport = {
     ...uiStrategySelection.report,
@@ -695,5 +701,6 @@ export function buildGenericCrudWorkspace(input: GenericCrudWorkspaceInput): Gen
     workflowIntelligence: buildWorkflowReport(workflowModel),
     productExperience: buildProductExperienceReport(productExperienceModel),
     productArchitecture: buildProductArchitectureReport(productArchitectureModel),
+    productDesign: buildProductDesignReport(productDesignModel),
   };
 }

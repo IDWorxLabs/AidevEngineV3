@@ -29,6 +29,7 @@ export interface ArchitectureGuidedWorkspace {
   workflowIntelligence: import('../workflow/workflow-types.js').WorkflowReport | null;
   productExperience: import('../product-experience/product-experience-types.js').ProductExperienceReport | null;
   productArchitecture: import('../product-architecture/product-architecture-types.js').ProductArchitectureReport | null;
+  productDesign: import('../product-design/product-design-types.js').ProductDesignReport | null;
 }
 
 export interface ArchitectureGuidedWorkspaceInput {
@@ -54,6 +55,7 @@ function finalizeWorkspace(
   workflowIntelligence: import('../workflow/workflow-types.js').WorkflowReport | null = null,
   productExperience: import('../product-experience/product-experience-types.js').ProductExperienceReport | null = null,
   productArchitecture: import('../product-architecture/product-architecture-types.js').ProductArchitectureReport | null = null,
+  productDesign: import('../product-design/product-design-types.js').ProductDesignReport | null = null,
 ): ArchitectureGuidedWorkspace {
   const evidence = collectEvidence(files, architecturePlan);
   return {
@@ -62,6 +64,7 @@ function finalizeWorkspace(
     workflowIntelligence,
     productExperience,
     productArchitecture,
+    productDesign,
     architectureGeneration: {
       applied: true,
       foldersCreated: evidence.foldersCreated,
@@ -577,6 +580,7 @@ export function buildArchitectureGuidedWorkspace(
           crud.workflowIntelligence,
           crud.productExperience,
           crud.productArchitecture,
+          crud.productDesign,
         );
       }
       break;

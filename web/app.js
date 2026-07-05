@@ -18,6 +18,7 @@ const uiStrategyEl = document.getElementById('ui-strategy');
 const workflowIntelligenceEl = document.getElementById('workflow-intelligence');
 const productExperienceEl = document.getElementById('product-experience');
 const productArchitectureEl = document.getElementById('product-architecture');
+const productDesignEl = document.getElementById('product-design');
 const realAppTrialsEl = document.getElementById('real-app-trials');
 const engineeringTimelineEl = document.getElementById('engineering-timeline');
 const timelineStagesEl = document.getElementById('timeline-stages');
@@ -51,6 +52,7 @@ const REPORT_CARD_MAP = [
   ['workflow-intelligence', 'card-workflow-intelligence'],
   ['product-experience', 'card-product-experience'],
   ['product-architecture', 'card-product-architecture'],
+  ['product-design', 'card-product-design'],
   ['preview-verification', 'card-preview-verification'],
   ['build-loop', 'card-build-loop'],
   ['engineering-timeline-report', 'card-engineering-timeline-report'],
@@ -136,6 +138,7 @@ function resetWorkspaceUI(options = {}) {
   workflowIntelligenceEl.hidden = true;
   productExperienceEl.hidden = true;
   productArchitectureEl.hidden = true;
+  productDesignEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
 
@@ -179,6 +182,8 @@ function renderSidebarMetrics(report) {
     report.productExperience?.experienceSummary ?? '—';
   document.getElementById('sidebar-architecture-summary').textContent =
     report.productArchitecture?.architectureSummary ?? '—';
+  document.getElementById('sidebar-design-summary').textContent =
+    report.productDesign?.designSummary ?? '—';
   document.getElementById('sidebar-preview-ready').textContent = report.previewUrl ? 'Yes' : 'No';
 
   document.getElementById('sidebar-duration').textContent = `${(report.durationMs / 1000).toFixed(1)}s`;
@@ -262,6 +267,7 @@ function showTimelineBuild() {
   workflowIntelligenceEl.hidden = true;
   productExperienceEl.hidden = true;
   productArchitectureEl.hidden = true;
+  productDesignEl.hidden = true;
   realAppTrialsEl.hidden = true;
   engineeringTimelineReportEl.hidden = true;
   timelineIdleEl.hidden = true;
@@ -890,6 +896,33 @@ function renderProductArchitecture(architecture) {
   syncReportCards();
 }
 
+function renderProductDesign(design) {
+  if (!design) {
+    productDesignEl.hidden = true;
+    syncReportCards();
+    return;
+  }
+
+  productDesignEl.hidden = false;
+  document.getElementById('pdie-visual-tone').textContent = design.visualTone;
+  document.getElementById('pdie-interaction-philosophy').textContent = design.interactionPhilosophy;
+  document.getElementById('pdie-visual-density').textContent = design.visualDensity;
+  document.getElementById('pdie-spacing-philosophy').textContent = design.spacingPhilosophy;
+  document.getElementById('pdie-corner-radius').textContent = design.cornerRadius;
+  document.getElementById('pdie-shadow-strategy').textContent = design.shadowStrategy;
+  document.getElementById('pdie-typography-personality').textContent = design.typographyPersonality;
+  document.getElementById('pdie-motion-personality').textContent = design.motionPersonality;
+  document.getElementById('pdie-confidence').textContent = design.designConfidence.toFixed(2);
+  renderList('pdie-personality', design.productPersonality ?? []);
+  renderList('pdie-communication-style', design.communicationStyle ?? []);
+  renderList('pdie-emotional-goals', design.primaryEmotionalGoals ?? []);
+  renderList('pdie-component-style', design.componentStyle ?? []);
+  renderList('pdie-hierarchy', design.informationHierarchy ?? []);
+  renderList('pdie-accessibility-goals', design.accessibilityGoals ?? []);
+  renderList('pdie-responsiveness', design.futureResponsiveness ?? []);
+  syncReportCards();
+}
+
 function renderProductQuality(quality) {
   if (!quality) {
     productQualityEl.hidden = true;
@@ -1131,6 +1164,7 @@ function renderResults(data) {
   renderWorkflowIntelligence(report.workflowIntelligence);
   renderProductExperience(report.productExperience);
   renderProductArchitecture(report.productArchitecture);
+  renderProductDesign(report.productDesign);
   renderBuildLoop(report.buildLoop);
   renderPreviewVerification(report.previewVerification);
   renderRealAppTrials(report.realAppTrialResults);

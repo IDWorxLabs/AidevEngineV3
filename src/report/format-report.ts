@@ -14,6 +14,7 @@ import type {
   WorkflowReport,
   ProductExperienceReport,
   ProductArchitectureReport,
+  ProductDesignReport,
   UnderstandingReport,
 } from '../types.js';
 import { formatStageDuration } from '../runtime/live-engineering-timeline.js';
@@ -344,6 +345,41 @@ export function formatProductArchitectureSection(
   ];
 }
 
+export function formatProductDesignSection(design: ProductDesignReport): string[] {
+  return [
+    '──────────────── Product Design Intelligence ────────────────',
+    'Product Personality:',
+    ...(design.productPersonality.length > 0 ? formatList(design.productPersonality) : ['  (none)']),
+    `Visual Tone:            ${design.visualTone}`,
+    'Communication Style:',
+    ...(design.communicationStyle.length > 0 ? formatList(design.communicationStyle) : ['  (none)']),
+    `Interaction Philosophy: ${design.interactionPhilosophy}`,
+    'Emotional Goals:',
+    ...(design.primaryEmotionalGoals.length > 0
+      ? formatList(design.primaryEmotionalGoals)
+      : ['  (none)']),
+    `Visual Density:         ${design.visualDensity}`,
+    `Spacing Philosophy:     ${design.spacingPhilosophy}`,
+    `Corner Radius:          ${design.cornerRadius}`,
+    'Component Style:',
+    ...(design.componentStyle.length > 0 ? formatList(design.componentStyle) : ['  (none)']),
+    `Shadow Strategy:        ${design.shadowStrategy}`,
+    `Typography Personality: ${design.typographyPersonality}`,
+    `Motion Personality:     ${design.motionPersonality}`,
+    'Hierarchy:',
+    ...(design.informationHierarchy.length > 0
+      ? formatList(design.informationHierarchy)
+      : ['  (none)']),
+    'Accessibility:',
+    ...(design.accessibilityGoals.length > 0 ? formatList(design.accessibilityGoals) : ['  (none)']),
+    'Responsiveness:',
+    ...(design.futureResponsiveness.length > 0
+      ? formatList(design.futureResponsiveness)
+      : ['  (none)']),
+    `Overall Design Confidence: ${design.designConfidence.toFixed(2)}`,
+  ];
+}
+
 export function formatUiStrategySection(uiStrategy: UiStrategyReport): string[] {
   return [
     '── UI Strategy ──',
@@ -579,6 +615,10 @@ export function formatBuildReport(report: BuildReport): string {
 
   if (report.productArchitecture) {
     lines.push('', ...formatProductArchitectureSection(report.productArchitecture));
+  }
+
+  if (report.productDesign) {
+    lines.push('', ...formatProductDesignSection(report.productDesign));
   }
 
   if (report.uiStrategy) {
